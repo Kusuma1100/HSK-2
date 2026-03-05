@@ -836,10 +836,6 @@
                 document.getElementById('unlock-code').value = '';
                 errorDiv.style.display = 'none';
                 requestFullscreen();
-                
-                setTimeout(() => {
-                    alert('✅ Berhasil dibuka! Lanjutkan ujian.');
-                }, 500);
             } else {
                 errorDiv.textContent = '❌ Kode salah! Hubungi pengawas.';
                 errorDiv.style.display = 'block';
