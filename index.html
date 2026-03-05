@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem TryOut HSK 2 Online KUSUMA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 15px;
+            position: relative;
+        }
+
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .floating-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-circle:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-circle:nth-child(2) {
+            width: 120px;
+            height: 120px;
+            left: 80%;
+            animation-delay: 2s;
+        }
+
+        .floating-circle:nth-child(3) {
+            width: 60px;
+            height: 60px;
+            left: 50%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin: 15px 0;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 1.8em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header p {
+            color: #7f8c8d;
+            font-size: 1em;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            color: white;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .info-box h3 {
+            margin-bottom: 12px;
+            font-size: 1.2em;
+            color: white;
+        }
+
+        .info-inner {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        .info-inner p {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 0.95em;
+        }
+
+        .warning-box {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 12px;
+        }
+
+        .warning-box p {
+            font-size: 0.85em;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 1em;
+        }
+
+        .form-group input[type="password"],
+        .form-group input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .exam-card {
+            background: linear-gradient(135deg, #a8edea, #fed6e3);
+            border: 3px solid #667eea;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .exam-icon {
+            font-size: 4em;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .exam-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .exam-subtitle {
+            color: #7f8c8d;
+            font-size: 1em;
+            margin-bottom: 15px;
+        }
+
+        .exam-duration {
+            background: rgba(0, 0, 0, 0.1);
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 1em;
+            color: #2c3e50;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .rules-container {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .rules-container h3 {
+            color: #2c3e50;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .rules-container ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .rules-container li {
+            margin-bottom: 8px;
+            padding-left: 25px;
+            position: relative;
+            color: #34495e;
+            line-height: 1.5;
+            font-size: 0.9em;
+        }
+
+        .rules-container li:before {
+            content: "⚠️";
+            position: absolute;
+            left: 0;
+        }
+
+        .timer-container {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(231, 76, 60, 0.9);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 25px;
+            font-size: 0.9em;
+            font-weight: bold;
+            z-index: 1000;
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .section-indicator {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: rgba(102, 126, 234, 0.9);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 25px;
+            font-size: 0.85em;
+            font-weight: bold;
+            z-index: 1000;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .warning-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(231, 76, 60, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            animation: slideDown 0.5s ease;
+            padding: 15px;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
+        }
+
+        .warning-content {
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .warning-content h2 {
+            color: #e74c3c;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .warning-content p {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            font-size: 0.95em;
+        }
+
+        .exam-frame {
+            width: 100%;
+            height: calc(100vh - 120px);
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .violation-counter {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(241, 196, 15, 0.9);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 25px;
+            font-weight: bold;
+            z-index: 1000;
+            font-size: 0.85em;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            cursor: pointer;
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: #e74c3c;
+            color: white;
+            padding: 12px;
+            border-radius: 10px;
+            margin: 15px 0;
+            text-align: center;
+            display: none;
+            font-size: 0.95em;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 1.5em;
+            }
+
+            .exam-icon {
+                font-size: 3em;
+            }
+
+            .exam-title {
+                font-size: 1.4em;
+            }
+
+            .timer-container,
+            .section-indicator {
+                font-size: 0.75em;
+                padding: 8px 12px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .exam-frame {
+                height: calc(100vh - 100px);
+            }
+        }
+
+        @media (max-width: 900px) and (orientation: landscape) {
+            .timer-container,
+            .section-indicator {
+                top: 5px;
+                font-size: 0.7em;
+                padding: 6px 10px;
+            }
+
+            .violation-counter {
+                bottom: 5px;
+                right: 5px;
+                font-size: 0.7em;
+                padding: 6px 12px;
+            }
+
+            .exam-frame {
+                height: calc(100vh - 80px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-elements">
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+    </div>
+
+    <div id="timer-display" class="timer-container" style="display: none;">
+        ⏰ <span id="timer-text">00:00:00</span>
+    </div>
+
+    <div id="section-indicator" class="section-indicator" style="display: none;">
+        📝 HSK 2 Ujian
+    </div>
+
+    <div id="violation-counter" class="violation-counter" style="display: none;">
+        ⚠️ <span id="violation-count">0</span>/1
+    </div>
+
+    <div id="warning-overlay" class="warning-overlay">
+        <div class="warning-content">
+            <h2>🚫 PELANGGARAN!</h2>
+            <p>Anda telah keluar dari halaman. TryOut telah diblokir.</p>
+            <p><strong>Hubungi pengawas untuk kode pembuka.</strong></p>
+            <div class="form-group">
+                <label for="unlock-code">Kode Pembuka (4 digit):</label>
+                <input type="text" id="unlock-code" placeholder="Kode dari pengawas" maxlength="4">
+            </div>
+            <button class="btn" onclick="unlockExam()">Buka Blokir</button>
+            <div id="unlock-error" class="error-message"></div>
+            <div style="margin-top: 12px; padding: 10px; background: #f8f9fa; border-radius: 8px; font-size: 0.85em; color: #7f8c8d;">
+                💡 Hubungi pengawas untuk kode unlock
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Halaman 1: Peraturan -->
+        <div id="rules-page" class="page active">
+            <div class="card">
+                <div class="header">
+                    <h1>📋 Peraturan TryOut HSK 2</h1>
+                    <p>Baca dan patuhi semua peraturan</p>
+                </div>
+
+                <!-- INFO PENTING -->
+                <div class="info-box">
+                    <h3>📱 INFO PENTING!</h3>
+                    <div class="info-inner">
+                        <p>
+                            ✅ <strong>Sangat disarankan menggunakan HP Android dengan aplikasi Google Chrome</strong>
+                        </p>
+                        <p>
+                            🔕 <strong>WAJIB aktifkan mode DND (Do Not Disturb)</strong> agar tidak terganggu notifikasi!
+                        </p>
+                        <div class="warning-box">
+                            <p>
+                                ⚠️ <strong>Peringatan:</strong> Notifikasi yang masuk bisa membuat Anda keluar dari halaman ujian dan terkena pelanggaran!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rules-container">
+                    <h3>⏰ Informasi TryOut</h3>
+                    <ul>
+                        <li><strong>Format:</strong> 1 Ujian Lengkap (All-in-One)</li>
+                        <li><strong>Isi:</strong> Listening + Reading + Writing</li>
+                        <li><strong>Durasi:</strong> 90 menit</li>
+                        <li><strong>Timer:</strong> Dimulai otomatis</li>
+                        <li><strong>Jawaban:</strong> Tersimpan otomatis</li>
+                    </ul>
+                </div>
+
+                <div class="rules-container">
+                    <h3>🚫 DILARANG</h3>
+                    <ul>
+                        <li>Membuka tab/aplikasi lain</li>
+                        <li>Keluar dari fullscreen</li>
+                        <li>Keluar dari website</li>
+                        <li>Berkomunikasi dengan orang lain</li>
+                        <li>Bersuara saat TryOut</li>
+                        <li>Menggunakan earphone/headset</li>
+                    </ul>
+                </div>
+
+                <div class="rules-container">
+                    <h3>🔐 Sistem Keamanan</h3>
+                    <ul>
+                        <li>Password 4 digit untuk masuk ujian</li>
+                        <li>Kode unlock 4 digit jika terkena blokir</li>
+                        <li>Maksimal 1x percobaan ulang</li>
+                        <li>Pelanggaran ke-2 = diskualifikasi</li>
+                    </ul>
+                </div>
+
+                <div class="checkbox-container">
+                    <input type="checkbox" id="agree-rules">
+                    <label for="agree-rules">Saya setuju dengan semua peraturan</label>
+                </div>
+
+                <button class="btn" id="start-exam-btn" onclick="showPasswordPage()" disabled>
+                    🚀 Lanjut ke Ujian
+                </button>
+            </div>
+        </div>
+
+        <!-- Halaman 2: Password -->
+        <div id="password-page" class="page">
+            <div class="card">
+                <div class="header">
+                    <h1>🔐 Masukkan Password</h1>
+                    <p>Password untuk memulai ujian HSK 2</p>
+                </div>
+
+                <div class="exam-card">
+                    <span class="exam-icon">📚</span>
+                    <div class="exam-title">HSK 2 Ujian Lengkap</div>
+                    <div class="exam-subtitle">听力 + 阅读 + 书写</div>
+                    <div class="exam-duration">⏱️ 90 menit</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="exam-password">Password Ujian (4 digit):</label>
+                    <input type="text" id="exam-password" placeholder="Masukkan 4 digit" maxlength="4" pattern="[0-9]{4}" inputmode="numeric">
+                </div>
+                
+                <button class="btn" onclick="validatePassword()">
+                    🚀 Mulai Ujian
+                </button>
+                
+                <div id="password-error" class="error-message"></div>
+                
+                <div style="margin-top: 15px; padding: 12px; background: #f8f9fa; border-radius: 10px; border-left: 4px solid #3498db;">
+                    <h4 style="color: #2c3e50; margin-bottom: 8px; font-size: 1em;">💡 Info:</h4>
+                    <ul style="color: #7f8c8d; line-height: 1.5; margin: 0; padding-left: 20px; font-size: 0.85em;">
+                        <li>Password 4 digit dari pengawas</li>
+                        <li>Hanya masukkan angka</li>
+                        <li>Timer mulai setelah password benar</li>
+                        <li>Pastikan DND sudah aktif!</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Halaman 3: Ujian -->
+        <div id="exam-page" class="page">
+            <div class="card">
+                <div class="header">
+                    <h1>📝 HSK 2 Ujian Berlangsung</h1>
+                    <p style="font-size: 0.9em;">Jangan keluar dari halaman ini!</p>
+                </div>
+
+                <div id="loading" class="loading-spinner"></div>
+                
+                <iframe id="exam-frame" class="exam-frame" style="display: none;"></iframe>
+                
+                <div class="navigation-buttons">
+                    <button class="btn" onclick="finishExam()" style="background: #e74c3c;">
+                        ⏹️ Selesai Ujian
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // KONFIGURASI UJIAN - PASSWORD BARU
+        const CONFIG = {
+            examPassword: '2468',      // 🔧 Password untuk masuk ujian (MUDAH DIINGAT: 2-4-6-8)
+            unlockCode: '1357',        // 🔧 Kode unlock jika terkena blokir (MUDAH DIINGAT: 1-3-5-7)
+            examDuration: 90,          // 🔧 Durasi ujian dalam menit (90 menit)
+            maxRetries: 1,             // Maksimal percobaan ulang
+            googleFormUrl: 'https://forms.gle/uWSkQgTQTYm8kTjd9' // URL Form HSK 2
+        };
+
+        let examState = {
+            isExamActive: false,
+            timeRemaining: 0,
+            violationCount: 0,
+            isLocked: false,
+            retryCount: 0,
+            startTime: null,
+            timerInterval: null,
+            warningTimeout: null
+        };
+
+        document.getElementById('agree-rules').addEventListener('change', function() {
+            document.getElementById('start-exam-btn').disabled = !this.checked;
+        });
+
+        function showPasswordPage() {
+            showPage('password-page');
+        }
+
+        function validatePassword() {
+            const inputPassword = document.getElementById('exam-password').value;
+            const errorDiv = document.getElementById('password-error');
+            
+            if (inputPassword === CONFIG.examPassword) {
+                errorDiv.style.display = 'none';
+                setTimeout(() => {
+                    startExam();
+                }, 500);
+            } else {
+                errorDiv.textContent = '❌ Password salah! Masukkan 4 digit yang benar.';
+                errorDiv.style.display = 'block';
+                document.getElementById('exam-password').value = '';
+            }
+        }
+
+        function startExam() {
+            if (examState.retryCount >= CONFIG.maxRetries && examState.isLocked) {
+                alert('Anda telah melebihi batas percobaan ulang.');
+                return;
+            }
+
+            examState.isExamActive = true;
+            examState.startTime = new Date();
+            examState.timeRemaining = CONFIG.examDuration * 60;
+            
+            setupAntiCheat();
+            startTimer();
+            loadGoogleForm();
+            showPage('exam-page');
+            requestFullscreen();
+            
+            document.getElementById('section-indicator').style.display = 'block';
+        }
+
+        function loadGoogleForm() {
+            const loading = document.getElementById('loading');
+            const frame = document.getElementById('exam-frame');
+            
+            frame.src = CONFIG.googleFormUrl;
+            
+            frame.onload = function() {
+                loading.style.display = 'none';
+                frame.style.display = 'block';
+            };
+        }
+
+        function startTimer() {
+            document.getElementById('timer-display').style.display = 'block';
+            document.getElementById('violation-counter').style.display = 'block';
+            
+            examState.timerInterval = setInterval(function() {
+                examState.timeRemaining--;
+                updateTimerDisplay();
+                
+                if (examState.timeRemaining <= 0) {
+                    autoFinishExam();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const hours = Math.floor(examState.timeRemaining / 3600);
+            const minutes = Math.floor((examState.timeRemaining % 3600) / 60);
+            const seconds = examState.timeRemaining % 60;
+            
+            const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            document.getElementById('timer-text').textContent = timeString;
+        }
+
+        function setupAntiCheat() {
+            document.addEventListener('visibilitychange', handleVisibilityChange);
+            window.addEventListener('blur', handleWindowBlur);
+            
+            document.addEventListener('contextmenu', function(e) {
+                if (e.target.tagName !== 'IFRAME') {
+                    e.preventDefault();
+                    recordViolation('Right-click terdeteksi');
+                }
+            });
+            
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'F12' || 
+                    (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+                    (e.ctrlKey && e.shiftKey && e.key === 'C') ||
+                    (e.ctrlKey && e.key === 'u')) {
+                    e.preventDefault();
+                    recordViolation('Developer tools terdeteksi');
+                }
+            });
+        }
+
+        function handleVisibilityChange() {
+            if (examState.isExamActive && document.hidden && !examState.isLocked) {
+                if (examState.warningTimeout) {
+                    clearTimeout(examState.warningTimeout);
+                }
+                
+                examState.warningTimeout = setTimeout(() => {
+                    if (document.hidden && examState.isExamActive && !examState.isLocked) {
+                        recordViolation('Keluar dari tab TryOut');
+                    }
+                }, 2000);
+            } else {
+                if (examState.warningTimeout) {
+                    clearTimeout(examState.warningTimeout);
+                    examState.warningTimeout = null;
+                }
+            }
+        }
+
+        function handleWindowBlur() {
+            if (examState.isExamActive && !examState.isLocked) {
+                setTimeout(() => {
+                    if (examState.isExamActive && !examState.isLocked && !document.hasFocus()) {
+                        recordViolation('Keluar dari window TryOut');
+                    }
+                }, 1000);
+            }
+        }
+
+        function recordViolation(reason) {
+            if (examState.isLocked) return;
+            
+            examState.violationCount++;
+            document.getElementById('violation-count').textContent = examState.violationCount;
+            
+            console.log(`Pelanggaran ${examState.violationCount}: ${reason}`);
+            
+            if (examState.violationCount >= 1) {
+                lockExam(reason);
+            }
+        }
+
+        function lockExam(reason) {
+            examState.isLocked = true;
+            clearInterval(examState.timerInterval);
+            document.getElementById('warning-overlay').style.display = 'flex';
+        }
+
+        function unlockExam() {
+            const code = document.getElementById('unlock-code').value;
+            const errorDiv = document.getElementById('unlock-error');
+            
+            if (code === CONFIG.unlockCode) {
+                examState.retryCount++;
+                
+                if (examState.retryCount > CONFIG.maxRetries) {
+                    errorDiv.textContent = 'Batas percobaan habis. Ujian dihentikan.';
+                    errorDiv.style.display = 'block';
+                    setTimeout(() => {
+                        alert('Ujian dihentikan karena batas percobaan habis.');
+                        window.location.reload();
+                    }, 3000);
+                    return;
+                }
+                
+                examState.isLocked = false;
+                examState.violationCount = 0;
+                document.getElementById('violation-count').textContent = '0';
+                document.getElementById('warning-overlay').style.display = 'none';
+                startTimer();
+                document.getElementById('unlock-code').value = '';
+                errorDiv.style.display = 'none';
+                requestFullscreen();
+                
+                setTimeout(() => {
+                    alert('✅ Berhasil dibuka! Lanjutkan ujian.');
+                }, 500);
+            } else {
+                errorDiv.textContent = '❌ Kode salah! Hubungi pengawas.';
+                errorDiv.style.display = 'block';
+                document.getElementById('unlock-code').value = '';
+            }
+        }
+
+        function requestFullscreen() {
+            const elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen().catch(err => {
+                    console.log('Fullscreen request failed:', err);
+                });
+            } else if (elem.webkitRequestFullscreen) {
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) {
+                elem.msRequestFullscreen();
+            }
+        }
+
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+        }
+
+        function finishExam() {
+            if (confirm('Yakin ingin menyelesaikan ujian?')) {
+                examState.isExamActive = false;
+                clearInterval(examState.timerInterval);
+                
+                if (examState.warningTimeout) {
+                    clearTimeout(examState.warningTimeout);
+                }
+                
+                document.getElementById('timer-display').style.display = 'none';
+                document.getElementById('section-indicator').style.display = 'none';
+                document.getElementById('violation-counter').style.display = 'none';
+                
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+                
+                alert('✅ Ujian selesai! Terima kasih telah mengikuti TryOut HSK 2.');
+                window.location.reload();
+            }
+        }
+
+        function autoFinishExam() {
+            examState.isExamActive = false;
+            clearInterval(examState.timerInterval);
+            alert('⏰ Waktu habis! Ujian ditutup otomatis.');
+            
+            if (examState.warningTimeout) {
+                clearTimeout(examState.warningTimeout);
+            }
+            
+            document.getElementById('timer-display').style.display = 'none';
+            document.getElementById('section-indicator').style.display = 'none';
+            document.getElementById('violation-counter').style.display = 'none';
+            
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            }
+            
+            setTimeout(() => {
+                alert('Terima kasih telah mengikuti TryOut HSK 2.');
+                window.location.reload();
+            }, 1000);
+        }
+
+        window.addEventListener('beforeunload', function(e) {
+            if (examState.isExamActive && !examState.isLocked) {
+                e.preventDefault();
+                e.returnValue = 'Ujian sedang berlangsung. Yakin keluar?';
+                recordViolation('Mencoba menutup halaman');
+                return 'Ujian sedang berlangsung. Yakin keluar?';
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Sistem TryOut HSK 2 Online - Siap');
+            console.log('Password Ujian: 2468');
+            console.log('Kode Unlock: 1357');
+            
+            document.onselectstart = function(e) { 
+                return e.target.tagName === 'IFRAME' || e.target.closest('iframe');
+            };
+            document.ondragstart = function(e) { 
+                return e.target.tagName === 'IFRAME' || e.target.closest('iframe');
+            };
+            
+            const unlockCodeInput = document.getElementById('unlock-code');
+            if (unlockCodeInput) {
+                unlockCodeInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        unlockExam();
+                    }
+                });
+                unlockCodeInput.addEventListener('input', function(e) {
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                });
+            }
+            
+            const examPasswordInput = document.getElementById('exam-password');
+            if (examPasswordInput) {
+                examPasswordInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        validatePassword();
+                    }
+                });
+                examPasswordInput.addEventListener('input', function(e) {
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                });
+            }
+        });
+    </script>
+</body>
+</html>
